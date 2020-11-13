@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "start" : "next start -p $PORT"
+    "start" : "next dev"
   },
   "repository": {
     "type": "git",
