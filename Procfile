@@ -1,1 +1,1 @@
-web: next start --port=$PORT -- host=0.0.0.0
+web: next dev --port=$PORT -- host=0.0.0.0
