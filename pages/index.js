@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Webcam from "react-webcam";
+const md5Hex = require ('md5-hex');
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeImg: null,
             imagesArr: []
         }
     }
@@ -16,22 +16,31 @@ class App extends Component {
 
     capturar = () => {
         let shot = this.webcam.getScreenshot();
+        let md5 = md5Hex(shot);
         let newArr = [...this.state.imagesArr];
-        newArr.unshift(shot);
+        newArr.unshift({data : shot, id : md5});
         this.setState({
-            activeImg: shot,
             imagesArr: newArr
         });
-    };        
+    };
 
     cancelar = () => {
         let novoArr = []
         this.setState({
-            activeImg : null,
             imagesArr : novoArr
         })
     }
 
+    removeFoto = (id) => {
+        let novoArr = this.state.imagesArr.filter( function( image ){
+            return image.id != id;
+        } );
+        
+        this.setState({
+            imagesArr : novoArr
+        })
+    }
+    
     enviarFotos = () =>{
         return(alert(this.state.imagesArr))
     }
@@ -44,8 +53,11 @@ class App extends Component {
         if (this.state.imagesArr.length > 0) {
             imagesPreview = (
                 <div >
-                    {this.state.imagesArr.map((image, index) => (
-                       <img  src={image} alt="" key={index} />
+                    {this.state.imagesArr.map((image) => (
+                        <div key = {image.id}>
+                            <img src={image.data} alt="" />
+                    <button onClick={() => this.removeFoto(image.id)} >Remover id: { image.id }</button>
+                        </div>
                     ))}
                 </div>
             );
@@ -60,7 +72,7 @@ class App extends Component {
                     videoConstraints={videoConstraints}
                 />
                 <br/>
-                <button  onClick={this.capturar}>Tirar foto</button>
+                <button onClick={this.capturar}>Tirar foto</button>
                 <div >
                     {imagesPreview}
                 </div>
